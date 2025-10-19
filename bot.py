@@ -7,7 +7,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-logger = logging.getLogger(_name_)
+logger = logging.getLogger(__name__)
 
 NOME, EMAIL, TELEFONE, IDADE, TESTE = range(5)
 
@@ -411,3 +411,4 @@ def main():
 
 if _name_ == '_main_':
     main()
+
