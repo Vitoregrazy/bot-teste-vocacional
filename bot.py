@@ -6,14 +6,11 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 
-# Configuração de logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(_name_)
 
-# Estados da conversa
 NOME, EMAIL, TELEFONE, IDADE, TESTE = range(5)
 
-# Perguntas do teste
 PERGUNTAS = [
     {
         "numero": 1,
@@ -217,7 +214,6 @@ PERGUNTAS = [
     }
 ]
 
-# Resultados dos perfis
 PERFIS = {
     'A': {
         'titulo': '🎯 PERFIL A - Dinâmico e Enérgico',
@@ -241,7 +237,6 @@ PERFIS = {
     }
 }
 
-# Função para conectar ao Google Sheets
 def conectar_google_sheets():
     try:
         scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
@@ -253,7 +248,6 @@ def conectar_google_sheets():
         logger.error(f"Erro ao conectar ao Google Sheets: {e}")
         return None
 
-# Comando /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     mensagem_boas_vindas = (
         "🎓 BEM-VINDO AO TESTE VOCACIONAL! 🎓\n\n"
@@ -270,25 +264,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text(mensagem_boas_vindas, parse_mode='Markdown')
     return NOME
 
-# Coletar nome
 async def coletar_nome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['nome'] = update.message.text
     await update.message.reply_text("📧 Qual é o seu e-mail?", parse_mode='Markdown')
     return EMAIL
 
-# Coletar email
 async def coletar_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['email'] = update.message.text
     await update.message.reply_text("📱 Qual é o seu telefone?", parse_mode='Markdown')
     return TELEFONE
 
-# Coletar telefone
 async def coletar_telefone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['telefone'] = update.message.text
     await update.message.reply_text("🎂 Qual é a sua idade?", parse_mode='Markdown')
     return IDADE
 
-# Coletar idade e iniciar teste
 async def coletar_idade(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['idade'] = update.message.text
     context.user_data['respostas'] = {}
@@ -304,7 +294,6 @@ async def coletar_idade(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     
     return await enviar_pergunta(update, context)
 
-# Enviar pergunta
 async def enviar_pergunta(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     pergunta_num = context.user_data['pergunta_atual']
     
@@ -329,7 +318,6 @@ async def enviar_pergunta(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     
     return TESTE
 
-# Processar resposta
 async def processar_resposta(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
@@ -345,14 +333,12 @@ async def processar_resposta(update: Update, context: ContextTypes.DEFAULT_TYPE)
     
     return await enviar_pergunta(update, context)
 
-# Finalizar teste
 async def finalizar_teste(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     pontuacao = context.user_data['pontuacao']
     perfil_resultado = max(pontuacao, key=pontuacao.get)
     
     perfil = PERFIS[perfil_resultado]
     
-    # Salvar dados no Google Sheets
     sheet = conectar_google_sheets()
     if sheet:
         try:
@@ -373,7 +359,6 @@ async def finalizar_teste(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         except Exception as e:
             logger.error(f"Erro ao salvar no Google Sheets: {e}")
     
-    # Montar mensagem de resultado
     resultado_msg = (
         f"🎉 TESTE CONCLUÍDO! 🎉\n\n"
         f"{perfil['titulo']}\n\n"
@@ -399,13 +384,11 @@ async def finalizar_teste(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     
     return ConversationHandler.END
 
-# Cancelar
 async def cancelar(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("❌ Teste cancelado. Use /start para começar novamente.")
     return ConversationHandler.END
 
 def main():
-    # Token do bot (você vai colocar o seu)
     TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
     
     application = Application.builder().token(TOKEN).build()
