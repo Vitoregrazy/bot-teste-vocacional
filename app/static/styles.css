@@ -1,0 +1,17 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    border: none;
+    border-radius: 0.75rem;
+}
+
+.table thead th {
+    background-color: #f1f3f5;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}

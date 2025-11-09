@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - CRAS{% endblock %}
+{% block content %}
+<h1 class="mb-4">Dashboard</h1>
+<div class="row g-3">
+    <div class="col-md-3">
+        <div class="card text-bg-primary h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total de Agendamentos</h5>
+                <p class="display-6">{{ total }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-warning h-100">
+            <div class="card-body">
+                <h5 class="card-title">Pendentes</h5>
+                <p class="display-6">{{ pending }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-success h-100">
+            <div class="card-body">
+                <h5 class="card-title">Confirmados</h5>
+                <p class="display-6">{{ confirmed }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-info h-100">
+            <div class="card-body">
+                <h5 class="card-title">Concluídos</h5>
+                <p class="display-6">{{ completed }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">Agendamentos por Motivo</div>
+    <div class="card-body">
+        {% if appointments_by_reason %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Motivo</th>
+                    <th>Quantidade</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for reason, count in appointments_by_reason %}
+                <tr>
+                    <td>{{ reason }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="mb-0">Nenhum agendamento registrado até o momento.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
