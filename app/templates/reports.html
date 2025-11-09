@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Relatórios - CRAS{% endblock %}
+{% block content %}
+<h1 class="mb-4">Relatórios</h1>
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Filtros</h5>
+                <form method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-3">
+                        <label class="form-label">Data inicial</label>
+                        <input type="date" name="start_date" class="form-control" value="{{ filters.start_date or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Data final</label>
+                        <input type="date" name="end_date" class="form-control" value="{{ filters.end_date or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Motivo</label>
+                        <select class="form-select" name="reason">
+                            <option value="">Todos</option>
+                            {% for reason in reasons %}
+                            <option value="{{ reason }}" {% if filters.reason == reason %}selected{% endif %}>{{ reason }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cadastrador</label>
+                        <input type="text" name="cadastrador" class="form-control" value="{{ filters.cadastrador or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Equipamento</label>
+                        <input type="text" name="equipment" class="form-control" value="{{ filters.equipment or '' }}">
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Gerar relatório</button>
+                        <button name="export" value="csv" class="btn btn-outline-secondary">Exportar CSV</button>
+                        <button name="export" value="pdf" class="btn btn-outline-secondary">Exportar PDF</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Resultado</h5>
+                <p class="text-muted">{{ appointments|length }} agendamentos encontrados.</p>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Motivo</th>
+                                <th>Cadastrador</th>
+                                <th>Equipamento</th>
+                                <th>Status</th>
+                                <th>Criado em</th>
+                                <th>Visita</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appt in appointments %}
+                            <tr>
+                                <td>{{ appt.id }}</td>
+                                <td>{{ appt.full_name }}</td>
+                                <td>{{ appt.reason }}</td>
+                                <td>{{ appt.registrant_name or '-' }}</td>
+                                <td>{{ appt.equipment or '-' }}</td>
+                                <td>{{ appt.status.name }}</td>
+                                <td>{{ appt.created_at.strftime('%d/%m/%Y') }}</td>
+                                <td>{{ appt.visit_date.strftime('%d/%m/%Y') if appt.visit_date else '-' }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center">Nenhum dado para exibir.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

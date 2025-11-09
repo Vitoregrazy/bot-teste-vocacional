@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Erro de Segurança{% endblock %}
+{% block content %}
+<div class="alert alert-danger">
+    <h4 class="alert-heading">Erro de validação</h4>
+    <p>{{ reason or 'Não foi possível validar sua requisição.' }}</p>
+    <hr>
+    <p class="mb-0">Atualize a página e tente novamente.</p>
+</div>
+{% endblock %}
